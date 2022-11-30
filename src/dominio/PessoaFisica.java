@@ -1,32 +1,28 @@
 package dominio;
 
-public class PessoaFisica {
-private int id;//id SERIAL PRIMARY KEY REFERENCES Cliente (id),
-private String nome;//Nome da Pessoa Física
-private int cpf;// CPF da pessoa física
+import java.util.ArrayList;
 
-public PessoaFisica() {
-	
-}
-public int getId() {
-	return id;
-}
-public void setId(int id) {
-	this.id = id;
-}
+public class PessoaFisica extends Cliente {
+private String nome;//Nome da Pessoa Física
+private String cpf;
 public String getNome() {
 	return nome;
 }
 public void setNome(String nome) {
 	this.nome = nome;
 }
-public int getCpf() {
+public String getCpf() {
 	return cpf;
 }
-public void setCpf(int cpf) {
+public void setCpf(String cpf) {
 	this.cpf = cpf;
 }
-
+//public void setEndereco(String endereco) {
+//	super.setEndereco(endereco);
+//}
+//public void setTelefone(int telefone) {
+//	super.setTelefone(telefone);
+//}
 
 
 
