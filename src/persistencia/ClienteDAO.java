@@ -10,8 +10,11 @@ import dominio.Cliente;
 public class ClienteDAO {
 private Conexao c;
 private String Inserir="INSERT INTO Cliente(id,endereco,telefone) VALUES (?,?,?) ";
-private String Buscar= " SELECT* from Cliente where Cliente.id=?";
+private String Buscar= " SELECT* from Cliente where id=?";
+private String Excluir="Delete from Cliente WHERE id=? ";
 
+
+//ALTERAR CPF/CNPJ
 
 public ClienteDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
@@ -32,7 +35,7 @@ public ClienteDAO() {
    c.desconectar();
    
    }
-  public Cliente buscar(String id) {
+  public Cliente buscar(String id){
 	  Cliente cliente= null;
 	  try {
 		  c.conectar();
@@ -49,6 +52,17 @@ public ClienteDAO() {
 		  System.out.println("ERRO em BUSCAR" +e.getMessage());
 	  }
 	  return cliente;
+  }
+  public void excluirCliente(String id) {
+	  try {
+		  c.conectar();
+		  PreparedStatement instrucao= c.getConexao().prepareStatement(Excluir);
+		  instrucao.setString(1, id);
+		  instrucao.execute();
+		  c.desconectar();
+	  }catch(Exception e) {
+		  System.out.println("Erro em EXCLUIR CLIENTE"+e.getMessage());
+	  }
   }
   
 //  public Cliente buscar( int id) {

@@ -5,6 +5,14 @@ import java.util.ArrayList;
 public class PessoaFisica extends Cliente {
 private String nome;//Nome da Pessoa Física
 private String cpf;
+
+public PessoaFisica(String cpf, String nome) {
+	this.cpf=cpf;
+	this.nome=nome;
+}
+public PessoaFisica() {
+	
+}
 public String getNome() {
 	return nome;
 }

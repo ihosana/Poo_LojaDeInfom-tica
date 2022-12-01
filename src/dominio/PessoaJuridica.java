@@ -7,6 +7,10 @@ private String cnpj; //CNPJ da pessoa Juridica
 public PessoaJuridica() {
 	
 }
+public PessoaJuridica( String cnpj,String nome_social) {
+	this.cnpj=cnpj;
+	this.nome_social=nome_social;
+}
 public String getNome_social() {
 	return nome_social;
 }

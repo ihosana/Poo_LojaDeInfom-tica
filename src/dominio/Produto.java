@@ -4,13 +4,13 @@ public class Produto {
 private int codigoProduto;// codigo do produto
 private String nomeProduto;//o nome do produto
 private Float valorProduto;//preço do produto
-private String Categoria;//A categoria em que se enquadra o produto
+private String categoria;//A categoria em que se enquadra o produto
 
 public Produto(int codigoproduto,String nomeproduto,Float valorproduto,String categoria ) {
 	this.codigoProduto=codigoproduto;
 	this.nomeProduto=nomeproduto;
 	this.valorProduto=valorproduto;
-	this.Categoria=categoria;
+	this.categoria=categoria;
 }
 public Produto() {
 	
@@ -34,10 +34,10 @@ public void setValorProduto(Float valorProduto) {
 	this.valorProduto = valorProduto;
 }
 public String getCategoria() {
-	return Categoria;
+	return categoria;
 }
 public void setCategoria(String categoria) {
-	Categoria = categoria;
+	this.categoria = categoria;
 }
 
 	

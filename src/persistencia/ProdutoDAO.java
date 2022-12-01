@@ -9,15 +9,15 @@ public class ProdutoDAO {
 	private Conexao c;
 	private String InserirProduto="INSERT INTO Produto(codigoproduto,nome_produto,valorproduto, categoria) VALUES (?,?,?,?) ";
 	private String BuscarProduto= "SELECT*FROM Produto where codigoProduto=?";
-	
-	
+	private String AlterarProduto="UPDATE Produto SET valorproduto=? WHERE codigoproduto=? ";
+	private String Excluir ="delete from produto where codigoproduto=?";
 
 public ProdutoDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
 }
 	
 	public Produto buscarProduto(int id) {
-		Produto p=null;
+		Produto p1=null;
 		try {
 		
 			c.conectar();
@@ -28,7 +28,7 @@ public ProdutoDAO() {
 			
 			if(r.next()) {
 				
-				p=new Produto(r.getInt("codigoproduto"),r.getString("nome_produto"),r.getFloat("valorproduto"),r.getString("categoria")) ;
+				p1=new Produto(r.getInt("codigoproduto"),r.getString("nome_produto"),r.getFloat("valorproduto"),r.getString("categoria")) ;
 			}
 			
 			
@@ -36,7 +36,7 @@ public ProdutoDAO() {
 		}catch(Exception e) {
 			System.out.println("Erro na busca do PRODUTO"+e.getMessage());
 		}
-		return p;
+		return p1;
 	}
 	public void inserir(Produto produto) {
 		try {
@@ -53,5 +53,47 @@ public ProdutoDAO() {
 			System.out.println("Erro na INSERÇÃO "+e.getMessage());
 		}
 	}
+	
+	public void alterar(Float v, int cod) {
+		try {
+			c.conectar();
+			
+			PreparedStatement instrucao= c.getConexao().prepareStatement(AlterarProduto);
+			instrucao.setFloat(1,v);
+			instrucao.setInt(2,cod);
+			instrucao.execute();
+			c.desconectar();
+			
+		}catch(Exception e) {
+			System.out.println("Erro em ALTERAR o produto"+e.getMessage());
+		}
+	}
+	
+	public void excluirPrduto(int cod) {
+		try {
+			c.conectar();
+			PreparedStatement instrucao= c.getConexao().prepareStatement(Excluir);
+			instrucao.setInt(1, cod);
+			instrucao.execute();
+			
+			c.desconectar();
+			
+		}catch(Exception q) {
+		System.out.println("ERRO em EXCLUIR produto" +q.getMessage());
+			
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

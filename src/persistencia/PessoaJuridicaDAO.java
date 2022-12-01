@@ -1,12 +1,13 @@
 package persistencia;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import dominio.PessoaJuridica;
 
 public class PessoaJuridicaDAO {
 private Conexao c;
 private String Inserir="INSERT INTO pessoajuridica VALUES (?,?);";
-private String Buscar="";
-
+private String Buscar="Select*from pessoajuridica where cnpj=?";
+private String Excluir="Delete from pessoajuridica WHERE cnpj=?";
 public PessoaJuridicaDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
 }
@@ -25,4 +26,38 @@ public void Cadastrar( PessoaJuridica pj) {
 		
      c.desconectar();
   }
+
+
+public PessoaJuridica buscarPessoaJ(String id) {
+	 PessoaJuridica pj = null;
+	 try {
+		c.conectar();
+		PreparedStatement instrucao= c.getConexao().prepareStatement(Buscar);
+		instrucao.setString(1,id);
+		ResultSet r = instrucao.executeQuery();
+		if(r.next()) {
+			pj= new PessoaJuridica(r.getString("cnpj"),r.getString("nome"));
+		}
+		c.desconectar();
+		 
+		 
+	 }catch(Exception e) {
+		 System.out.println("ERRO em BUSCAR PESSOAJURIDICA" + e.getMessage());
+	 }
+	 
+	 return pj;
+}
+public void excluirPessoaJ(String cod) {
+	 try {
+		 c.conectar();
+		 
+		 PreparedStatement instrucao= c.getConexao().prepareStatement(Excluir);
+			instrucao.setString(1, cod);
+			instrucao.execute();
+		 c.desconectar();
+		 
+	 }catch(Exception e) {
+		 System.out.println("ERRO em EXCLUIR PESSOAJURIDICA" +e.getMessage());
+	 }
+}
 }

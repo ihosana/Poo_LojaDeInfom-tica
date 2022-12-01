@@ -8,11 +8,14 @@ public class Venda {
 private String data_venda;//data em que foi realizada a venda
 private String horario_venda;//horario da venda realizada
 private int qnt;
+private int id;
+
 private String fk_cliente;//chave estrangeira do cliente
 private int fk_produto;//chave estrangeira do produto
 private int fk_usuario;//cave estrangeira do usuario
 private ArrayList<Produto> p;
-private int id;
+
+
 public Venda() {
 	
 }
@@ -26,8 +29,19 @@ public Venda(String data_venda,String hora_venda,int qnt,int fk_produto,int fk_u
 	this.fk_cliente=fk_cliente;
 }
 
+public ArrayList<Produto> getP() {
+	return p;
+}
+
+public void setP(ArrayList<Produto> p) {
+	this.p = p;
+}
 public int getId() {
 	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
 }
 
 public int getQnt() {
@@ -37,9 +51,7 @@ public int getQnt() {
 public void setQnt(int qnt) {
 	this.qnt = qnt;
 }
-public void setId(int id) {
-	this.id = id;
-}
+
 public void setFk_usuario(int fk_usuario) {
 	this.fk_usuario=fk_usuario;
 }
