@@ -11,7 +11,7 @@ public class ProdutoDAO {
 	private String BuscarProduto= "SELECT*FROM Produto where codigoProduto=?";
 	private String AlterarProduto="UPDATE Produto SET valorproduto=? WHERE codigoproduto=? ";
 	private String Excluir ="delete from produto where codigoproduto=?";
-
+  
 public ProdutoDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
 }

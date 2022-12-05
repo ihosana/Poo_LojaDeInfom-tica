@@ -3,15 +3,19 @@ package persistencia;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import dominio.Cliente;
+import dominio.Produto;
 import dominio.Venda;
 
 public class VendaDAO {
 	private Conexao c;
-	private String Inserir="Insert into Venda (datavenda,horavenda,qntProduto,fk_produto,fk_usuario,fk_cliente) VALUES (?,?,?,?,?,?); ";
+	private String Inserir="Insert into Venda (datavenda,horavenda,qntProduto,fk_usuario,fk_produto,fk_cliente) VALUES (?,?,?,?,?,?); ";
 	private String Buscar= " SELECT* from Venda where id=?";
 	private String Deletar="Delete from Venda where id=?";
 	private String ExcluirP="Delete from Venda where fk_cliente=? ";
-	private String BuscarP= "SELECT*FROM venda where fk_cliente='?'"; 
+	private String BuscarP= "SELECT* FROM venda where fk_cliente=? "; 
+	private String BuscarProduto="SELECT*FROM venda where fk_produto=?";
+	private String ExcluirProduto="Delete from venda where fk_produto=? ";
+	private String AtualizarVenda ="UPDATE venda set fk_cliente=? where fk_cliente=? ";
 //select venda por data
 
 	public VendaDAO() {
@@ -24,8 +28,8 @@ public class VendaDAO {
 			 instrucao.setString(1,venda.getData_venda());
 			 instrucao.setString(2,venda.getHorario_venda());
 			 instrucao.setInt(3,venda.getQnt());
-			 instrucao.setInt(4,venda.getFk_produto());
-			 instrucao.setInt(5,venda.getFk_usuario());
+			 instrucao.setInt(4,venda.getFk_usuario());
+			 instrucao.setInt(5,venda.getFk_produto());
 			 instrucao.setString(6,venda.getFk_cliente());
 			 instrucao.execute();
 		    }catch(Exception e) {
@@ -63,13 +67,12 @@ public class VendaDAO {
     	  c.conectar();
     	  PreparedStatement instrucao= c.getConexao().prepareStatement(Deletar);
 			 instrucao.setInt(1,id);
-
 			 instrucao.execute();
     	  
     	  
     	  c.desconectar();
 	  }catch(Exception e) {
-			 System.out.println("erro na Exclusão" + e.getMessage());
+			 System.out.println("erro na Exclusão da VENDA" + e.getMessage());
 		 }
 	 }
 	 public void excluirVendaPorPessoa(String id) {
@@ -77,13 +80,12 @@ public class VendaDAO {
 	    	  c.conectar();
 	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(ExcluirP);
 				 instrucao.setString(1,id);
-
 				 instrucao.execute();
 	    	  
 	    	  
 	    	  c.desconectar();
 		  }catch(Exception e) {
-				 System.out.println("erro na Exclusão" + e.getMessage());
+				 System.out.println("erro na Exclusão de VENDA por PESSOA: " + e.getMessage());
 			 }
 		 }
    public Venda buscarVendaPorPessoa(String pessoa) {
@@ -100,9 +102,52 @@ public class VendaDAO {
 	    	  
 	    	  c.desconectar();
 		  }catch(Exception e) {
-				 System.out.println("erro na EXCLUSÃO VENDA" + e.getMessage());
+				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
 			 }
 	   return v;
    }
-
+   public Venda buscarVendaPorProduto(int id) {
+	   Venda v= null;
+	   try {
+		   c.conectar();
+		   
+		   PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarProduto);
+           instrucao.setInt(1,id);		   
+		   ResultSet result = instrucao.executeQuery();
+		   if(result.next()) {
+			   v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));;
+		   }
+		   c.desconectar();
+	   }catch(Exception a) {
+		   System.out.println("ERRO NA BUSCA DE VENDA POR PRODUTO: "+a.getMessage());
+	   }
+	   return v;
+   }
+   public void excluirVendaPorProduto(int id) {
+	      try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(ExcluirProduto);
+				 instrucao.setInt(1,id);
+				 instrucao.execute();
+	    	  
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na Exclusão de VENDA por PRODUTO: " + e.getMessage());
+			 }
+		 }
+   public void atualizar(String id_novo, String id_antigo) {
+	      try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(AtualizarVenda);
+				 instrucao.setString(1,id_novo);
+				 instrucao.setString(2,id_antigo);
+				 instrucao.execute();
+	    	  
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na ATUALIZAÇÃO DA VENDA por PESSOA: " + e.getMessage());
+			 }
+		 }
 }

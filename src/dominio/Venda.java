@@ -13,19 +13,20 @@ private int id;
 private String fk_cliente;//chave estrangeira do cliente
 private int fk_produto;//chave estrangeira do produto
 private int fk_usuario;//cave estrangeira do usuario
+//private ArrayList<Produto> p;
 private ArrayList<Produto> p;
 
 
 public Venda() {
 	
 }
-
-public Venda(String data_venda,String hora_venda,int qnt,int fk_produto,int fk_usuario,String fk_cliente) {
+public Venda(String data_venda,String hora_venda,int qnt,int fk_usuario,int fk_produto,String fk_cliente) {
 	this.data_venda=data_venda;
 	this.horario_venda=hora_venda;
 	this.qnt=qnt;
-	this.fk_produto=fk_produto;
 	this.fk_usuario=fk_usuario;
+
+	this.fk_produto=fk_produto;
 	this.fk_cliente=fk_cliente;
 }
 

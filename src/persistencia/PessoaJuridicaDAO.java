@@ -8,6 +8,8 @@ private Conexao c;
 private String Inserir="INSERT INTO pessoajuridica VALUES (?,?);";
 private String Buscar="Select*from pessoajuridica where cnpj=?";
 private String Excluir="Delete from pessoajuridica WHERE cnpj=?";
+private String AtualizarPJ ="UPDATE pessoajuridica set cnpj=? where cnpj=? ";
+
 public PessoaJuridicaDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
 }
@@ -60,4 +62,18 @@ public void excluirPessoaJ(String cod) {
 		 System.out.println("ERRO em EXCLUIR PESSOAJURIDICA" +e.getMessage());
 	 }
 }
+public void atualizarPJ(String id_novo, String id_antigo) {
+    try {
+  	  c.conectar();
+  	  PreparedStatement instrucao= c.getConexao().prepareStatement(AtualizarPJ);
+			 instrucao.setString(1,id_novo);
+			 instrucao.setString(2,id_antigo);
+			 instrucao.execute();
+  	  
+  	  
+  	  c.desconectar();
+	  }catch(Exception e) {
+			 System.out.println("erro na ATUALIZAÇÃO Do CLIENTE por PESSOAJURIDICA: " + e.getMessage());
+		 }
+	 }
 }

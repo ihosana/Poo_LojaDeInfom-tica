@@ -10,8 +10,9 @@ import dominio.Cliente;
 public class ClienteDAO {
 private Conexao c;
 private String Inserir="INSERT INTO Cliente(id,endereco,telefone) VALUES (?,?,?) ";
-private String Buscar= " SELECT* from Cliente where id=?";
-private String Excluir="Delete from Cliente WHERE id=? ";
+private String Buscar= " SELECT* from Cliente where id=? ";
+private String Excluir=" Delete from Cliente WHERE id=? ";
+private String AtualizarCliente ="UPDATE cliente set id=? where id=? ";
 
 
 //ALTERAR CPF/CNPJ
@@ -61,9 +62,23 @@ public ClienteDAO() {
 		  instrucao.execute();
 		  c.desconectar();
 	  }catch(Exception e) {
-		  System.out.println("Erro em EXCLUIR CLIENTE"+e.getMessage());
+		  System.out.println("Erro em EXCLUIR CLIENTE "+e.getMessage());
 	  }
   }
+  public void atualizarCliente(String id_novo, String id_antigo) {
+      try {
+    	  c.conectar();
+    	  PreparedStatement instrucao= c.getConexao().prepareStatement(AtualizarCliente);
+			 instrucao.setString(1,id_novo);
+			 instrucao.setString(2,id_antigo);
+			 instrucao.execute();
+    	  
+    	  
+    	  c.desconectar();
+	  }catch(Exception e) {
+			 System.out.println("erro na ATUALIZAÇÃO Do CLIENTE por PESSOA: " + e.getMessage());
+		 }
+	 }
   
 //  public Cliente buscar( int id) {
 //	  Cliente cliente;

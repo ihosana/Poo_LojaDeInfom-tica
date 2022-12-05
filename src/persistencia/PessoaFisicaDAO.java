@@ -10,7 +10,8 @@ public class PessoaFisicaDAO {
  private Conexao c;	
  private String Buscar="Select*from pessoafisica where cpf=?";
  private String Excluir="Delete from pessoafisica WHERE cpf=?";
-	
+ private String AtualizarPF ="UPDATE pessoafisica set cpf=? where cpf=? ";
+
  public PessoaFisicaDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
  }
@@ -61,4 +62,18 @@ public class PessoaFisicaDAO {
 		 System.out.println("ERRO em EXCLUIR PESSOAFISICA" +e.getMessage());
 	 }
  }
+ public void atualizarPF(String id_novo, String id_antigo) {
+     try {
+   	  c.conectar();
+   	  PreparedStatement instrucao= c.getConexao().prepareStatement(AtualizarPF);
+			 instrucao.setString(1,id_novo);
+			 instrucao.setString(2,id_antigo);
+			 instrucao.execute();
+   	  
+   	  
+   	  c.desconectar();
+	  }catch(Exception e) {
+			 System.out.println("erro na ATUALIZAÇÃO Do CLIENTE por PESSOA: " + e.getMessage());
+		 }
+	 }
 }
