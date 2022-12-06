@@ -7,16 +7,31 @@ private String endereco;
 private String id;
 private int telefone;
 private ArrayList<PessoaFisica>Lista_pf;
+private ArrayList<Venda> venda; 
 private ArrayList<PessoaJuridica>Lista_pj;
+
 public Cliente(String id, String endereco, int telefone){
 	this.id=id;
 	this.endereco=endereco;
 	this.telefone=telefone;
+	venda = new ArrayList<Venda>();
 }
-public Cliente() {
-	
+public int getQtdVenda() {
+	return venda.size();
+}
+public int getTam() {
+	 return venda.size();
 }
 
+public Cliente() {
+	venda = new ArrayList<Venda>();
+}
+public ArrayList<Venda>getVenda(){
+	return venda;
+}
+public void setVenda(ArrayList<Venda> venda) {
+	this.venda = venda;
+}
 public String getId() {
 	return id;
 }

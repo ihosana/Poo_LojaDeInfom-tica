@@ -1,7 +1,11 @@
 package persistencia;
 
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import dominio.Cliente;
 import dominio.Produto;
 import dominio.Venda;
@@ -106,6 +110,25 @@ public class VendaDAO {
 			 }
 	   return v;
    }
+	 public ArrayList<Venda> buscarVendaPorP(String pessoa) {
+	        ArrayList<Venda> lista = new ArrayList<>();
+	        try{
+	        	 c.conectar();
+	            PreparedStatement instrucao = c.getConexao().prepareStatement(BuscarP);
+	            instrucao.setString(1, pessoa);
+	            ResultSet result = instrucao.executeQuery();
+	            while(result.next()){
+	                Venda v = new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));
+	        		
+	                lista.add(v);
+	            }
+	            c.desconectar();
+	        }catch(SQLException e){
+	            System.out.println("Erro no relat�rio: "+e.getMessage());
+	        }
+	        return lista;
+	    }
+	 
    public Venda buscarVendaPorProduto(int id) {
 	   Venda v= null;
 	   try {
