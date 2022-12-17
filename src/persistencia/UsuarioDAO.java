@@ -6,9 +6,9 @@ import dominio.Usuario;
 public class UsuarioDAO {
 
 	private Conexao c;
-	private String InserirUsuario="INSERT INTO Produto(codigoproduto,nome_produto,valorproduto, qntvendidas, categoria) VALUES (?,?,?) ";
-	private String BuscarUsuario= "SELECT*FROM Usuario where id=?";
-	
+	private String InserirUsuario="INSERT INTO Usuario(id,nomefuncionario,endereco,telefone,numerocarteira) VALUES (?,?,?,?,?) ";
+	private String BuscarUsuario= "SELECT*FROM Usuario where id=? ";
+	private String ExcluirUsuario="DELETE FROM Usuario WHERE id=?";
 	
 
 public UsuarioDAO() {
@@ -27,7 +27,7 @@ public Usuario buscarUsuario(int id) {
 		
 		if(r.next()) {
 			
-			u=new Usuario(r.getString("nomefuncionario"),r.getString("endereco"),r.getInt("telefone"),r.getInt("numerocarteira")) ;
+			u=new Usuario(r.getInt("id"),r.getString("nomefuncionario"),r.getString("endereco"),r.getInt("telefone"),r.getInt("numerocarteira")) ;
 		}
 		
 		
@@ -37,7 +37,34 @@ public Usuario buscarUsuario(int id) {
 	}
 	return u;
 }
+public void incluirUsuario(Usuario usuario) {
+	try {
+	 	c.conectar();
+		 PreparedStatement instrucao =c.getConexao().prepareStatement(InserirUsuario);
+		 instrucao.setInt(1,usuario.getId());
+		 instrucao.setString(2,usuario.getNome_funcionario());
+		 instrucao.setString(3,usuario.getEndereco());
+		 instrucao.setInt(4,usuario.getTelefone());
+		 instrucao.setInt(5,usuario.getN_carteira());
+		 instrucao.execute();
+	    }catch(Exception e) {
+		   System.out.println("ERRO EM INCLUIR funcionario : "+ e.getMessage());
+	    }
+	   
+	   c.desconectar();
+	   
+	   }
+public void excluirUsuario(int id) {
+    try {
+    	c.conectar();
+    	PreparedStatement instrucao =c.getConexao().prepareStatement(ExcluirUsuario); 
+        instrucao.setInt(1, id);	
+        instrucao.execute();
+    	c.desconectar();
+    	
+    }catch(Exception e) {
+    	System.out.println("ERRO em EXCLUIR USUARIO" +e.getMessage());
+    }
+}
 
-	
-	
 }

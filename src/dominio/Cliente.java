@@ -6,9 +6,7 @@ public class Cliente {
 private String endereco;
 private String id;
 private int telefone;
-private ArrayList<PessoaFisica>Lista_pf;
 private ArrayList<Venda> venda; 
-private ArrayList<PessoaJuridica>Lista_pj;
 
 public Cliente(String id, String endereco, int telefone){
 	this.id=id;

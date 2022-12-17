@@ -2,8 +2,11 @@ package persistencia;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 import dominio.Produto;
+import dominio.Venda;
 
 public class ProdutoDAO {
 	private Conexao c;
@@ -11,6 +14,7 @@ public class ProdutoDAO {
 	private String BuscarProduto= "SELECT*FROM Produto where codigoProduto=?";
 	private String AlterarProduto="UPDATE Produto SET valorproduto=? WHERE codigoproduto=? ";
 	private String Excluir ="delete from produto where codigoproduto=?";
+	private String TodosProduto="SELECT*FROM Produto";
   
 public ProdutoDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
@@ -69,7 +73,7 @@ public ProdutoDAO() {
 		}
 	}
 	
-	public void excluirPrduto(int cod) {
+	public void excluirProduto(int cod) {
 		try {
 			c.conectar();
 			PreparedStatement instrucao= c.getConexao().prepareStatement(Excluir);
@@ -83,8 +87,27 @@ public ProdutoDAO() {
 			
 		}
 	}
-	
-	
+	  public ArrayList<Produto> emitirProduto() {
+		  Produto p ;
+		ArrayList<Produto> lista= new ArrayList<Produto>();
+			try {
+				c.conectar();
+				Statement instrucao= c.getConexao().createStatement();
+				ResultSet r= instrucao.executeQuery(TodosProduto);
+				
+				//DESMONTANDO O RESULT SET
+				while(r.next()) {
+					p=new Produto(r.getInt("codigoproduto"),r.getString("nome_produto"),r.getFloat("valorproduto"),r.getString("categoria")) ;
+				lista.add(p);
+				}
+			
+					c.desconectar();
+			}catch(Exception e) {
+				System.out.println("ERRO EM EMITIR RELATORIO PRODUTO:"+ e.getMessage());
+			}
+
+			return lista;
+		}
 	
 	
 	

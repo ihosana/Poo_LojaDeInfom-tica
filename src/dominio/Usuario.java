@@ -8,7 +8,8 @@ private	int telefone;
 private	int n_carteira;
 private int id;
 
-public Usuario(String nome_funcionario, String endereco, int telefone, int n_carteira){
+public Usuario(int id,String nome_funcionario, String endereco, int telefone, int n_carteira){
+	this.id=id;
 	this.nome_funcionario=nome_funcionario;
 	this.endereco=endereco;
 	this.telefone=telefone;

@@ -9,7 +9,6 @@ private String data_venda;//data em que foi realizada a venda
 private String horario_venda;//horario da venda realizada
 private int qnt;
 private int id;
-
 private String fk_cliente;//chave estrangeira do cliente
 private int fk_produto;//chave estrangeira do produto
 private int fk_usuario;//cave estrangeira do usuario

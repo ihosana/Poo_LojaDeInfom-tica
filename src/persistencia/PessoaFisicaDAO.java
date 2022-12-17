@@ -11,7 +11,7 @@ public class PessoaFisicaDAO {
  private String Buscar="Select*from pessoafisica where cpf=?";
  private String Excluir="Delete from pessoafisica WHERE cpf=?";
  private String AtualizarPF ="UPDATE pessoafisica set cpf=? where cpf=? ";
-
+ private String TodasPF="SELECT*FROM PessoaFisica";
  public PessoaFisicaDAO() {
 	 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
  }

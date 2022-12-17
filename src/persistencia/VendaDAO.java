@@ -1,17 +1,17 @@
 package persistencia;
 
 import java.sql.PreparedStatement;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-
 import dominio.Cliente;
 import dominio.Produto;
 import dominio.Venda;
 
 public class VendaDAO {
 	private Conexao c;
+	private String TodasVendas="SELECT*FROM Venda";
 	private String Inserir="Insert into Venda (datavenda,horavenda,qntProduto,fk_usuario,fk_produto,fk_cliente) VALUES (?,?,?,?,?,?); ";
 	private String Buscar= " SELECT* from Venda where id=?";
 	private String Deletar="Delete from Venda where id=?";
@@ -173,4 +173,25 @@ public class VendaDAO {
 				 System.out.println("erro na ATUALIZAÇÃO DA VENDA por PESSOA: " + e.getMessage());
 			 }
 		 }
+   public ArrayList<Venda> emitirVenda() {
+	   Venda v;
+	ArrayList<Venda> lista= new ArrayList<Venda>();
+		try {
+			c.conectar();
+			Statement instrucao= c.getConexao().createStatement();
+			ResultSet result= instrucao.executeQuery(TodasVendas);
+			
+			//DESMONTANDO O RESULT SET
+			while(result.next()) {
+		    v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));;
+				lista.add(v);
+			}
+		
+				c.desconectar();
+		}catch(Exception e) {
+			System.out.println("ERRO EM EMITIR RELATORIO VENDA:"+ e.getMessage());
+		}
+
+		return lista;
+	}
 }

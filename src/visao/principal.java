@@ -32,7 +32,7 @@ public class principal {
            int opcao,opcao4, usuario,tel ;
            String opcao2,id, opcao3, endereco, ATUAL;
            Cliente pessoa;
-           int resp ;
+           int resp ,escolha;
            float preco;
            Cliente cli,clienteAtual;
            ClienteDAO Clidao = new ClienteDAO();
@@ -43,6 +43,9 @@ public class principal {
            Venda venda;
            Produto p ;
            Produto p1;
+           boolean permitido;
+           
+           ArrayList<Venda>ListaVendas= new ArrayList<Venda>();
            ArrayList<Produto> prod;
            ArrayList<String>v=new ArrayList<String>();
            Usuario u;
@@ -62,20 +65,23 @@ public class principal {
 		System.out.println("1-venda");
 		System.out.println("2-Produtos");
 		System.out.println("3-Cliente");
-		System.out.println("4-Acessar o historico de vendas por data");
-		System.out.println("5-Sair");
-	    opcao=op.nextInt();
+		System.out.println("4-Buscar vendas por Cliente");
+		System.out.println("5-Funcionario");
+		System.out.println("6-Sair");
+		escolha=op.nextInt();
 		
 	    
-	    switch(opcao){
+	    switch(escolha){
 		case 1:
+			
 		  do {
 			    	System.out.println("---------------------");
 					System.out.println("Menu Secundario De VENDA");
 					System.out.println("---------------------");
 					System.out.println("1-Cadastrar Venda");
 					System.out.println("2-Cancelar Venda(Excluir venda)");
-					System.out.println("3-voltar ao menu principal");
+					System.out.println("3-Relatorio de todas as vendas)");
+					System.out.println("4-voltar ao menu principal");
 					System.out.println("Digite a opcao desejada");
 					opcao=op2.nextInt();
 			 switch(opcao) {
@@ -132,10 +138,7 @@ public class principal {
 				   			   venda.setHorario_venda(horaFormatada);	
 				   			   venda.setFk_usuario(usuario);
 						       venda.setFk_cliente(id);
-						     
-//						       v.add(venda);
-//						       
-//			                   cli.setVenda(v);
+						 
 						       vDAO.inserirVenda(venda);
 							   
 							   System.out.println("Venda sucedida com sucesso!!!"); 
@@ -155,7 +158,6 @@ public class principal {
 							   System.out.println("*********Comprovante!!!!*********");						
 							   for(i=0;i<venda.getP().size();i++) {
 								System.out.println("---------PRODUTO-"+(i+1)+"--------");
-//								System.out.println("produto:"+venda.getP());
 								System.out.println("Codigo do produto: "+venda.getP().get(i).getCodigoProduto());
 								System.out.println("Nome: "+venda.getP().get(i).getNomeProduto());	
 								System.out.println("Valor: "+venda.getP().get(i).getValorProduto());
@@ -212,21 +214,38 @@ public class principal {
 				if(vendaV==true){
 					System.out.println("Venda excluida com sucesso");
 				 }
+			 break;
+		     case 3:
+		     System.out.println("Relatorio das vendas.....");
+		     ListaVendas= vDAO.emitirVenda();
+		     
+		     for(i=0;i<ListaVendas.size();i++) {
+		    	 System.out.println("------------------------------");
+				  System.out.println("venda: 0"+(i+1));
+				  System.out.println("Data da venda: "+ListaVendas.get(i).getData_venda());
+				  System.out.println("Horario da venda: "+ ListaVendas.get(i).getHorario_venda());
+				  System.out.println("Qtd do produto: "+ ListaVendas.get(i).getQnt());
+				  System.out.println("Funcionario: "+ListaVendas.get(i).getFk_usuario());
+				  System.out.println("Produto: "+ListaVendas.get(i).getFk_produto()); 
+				  System.out.println("Cliente: "+ListaVendas.get(i).getFk_cliente());     
+   		
+		     }
+		     break;	 
 		  };
-				    
-	     }while(opcao!=3);		
+	      
+	     }while(opcao!=4);		
 		break;
 		case 2:
-			
+		
 		  do {
-				
 				System.out.println("---------------------");
 				System.out.println("Menu Secundario de PRODUTO");
 				System.out.println("---------------------");
 				System.out.println("1-Cadastrar o PRODUTO");
 				System.out.println("2-Alterar o valor do PRODUTO");
 				System.out.println("3-Excluir produto");
-				System.out.println("4-voltar ao menu principal");
+				System.out.println("4-Mostrar todos os produto");
+				System.out.println("5-voltar ao menu principal");
 				System.out.println("Digite a opcao desejada");
 				opcao=op2.nextInt();
 				switch(opcao) {
@@ -277,11 +296,11 @@ public class principal {
 						venda=vDAO.buscarVendaPorProduto(opcao);
 						if(venda!=null) {
 							vDAO.excluirVendaPorProduto(opcao);
-							pDAO.excluirPrduto(opcao);
+							pDAO.excluirProduto(opcao);
 							System.out.println("Produto EXCLUIDO com sucesso!");
 							System.out.println("Produto ESTAR em alguma venda");
 						}else {
-							pDAO.excluirPrduto(opcao);
+							pDAO.excluirProduto(opcao);
 							System.out.println("Produto EXCLUIDO com sucesso!");
 							System.out.println("Produto NÃO estar em nenhuma venda");
 						}
@@ -289,8 +308,23 @@ public class principal {
 					    System.out.println("Produto NÃO cadastrado");
 					}
 				break;
+				case 4:
+					System.out.println("Relatorio dos produtos...");
+					prod= new ArrayList<Produto>(); 
+					prod= pDAO.emitirProduto();
+					     
+					  for(i=0;i<prod.size();i++) {
+					    	 System.out.println("------------------------------");
+							  System.out.println("Produto: 0"+(i+1));
+							  System.out.println("Codigo: "+prod.get(i).getCodigoProduto());
+							  System.out.println("Categoria: "+ prod.get(i).getCategoria());
+							  System.out.println("Nome: "+ prod.get(i).getNomeProduto());
+							  System.out.println("Valor: R$"+prod.get(i).getValorProduto());    
+			   		
+					     }
+				break;	
 			 }
-		   }while(opcao!=4);
+		   }while(opcao!=5);
 		break;
 		case 3:
 			do {
@@ -300,7 +334,8 @@ public class principal {
 			    System.out.println("1-Cadastrar Cliente");
 			    System.out.println("2-Excluir Cliente");
 			    System.out.println("3-Alterar o CPF/CNPJ do Cliente");
-			    System.out.println("4-voltar ao menu principal");
+			    System.out.println("4- Relatorio dos Cliente");
+			    System.out.println("5-voltar ao menu principal");
 			    System.out.println("Digite a opcao desejada");
 			    opcao=op2.nextInt();
 			        
@@ -643,21 +678,154 @@ public class principal {
 				  }	
 				break;
 					
-					
 	       }		
 		}while(opcao!=4);
 					
     	break;
-    	
-    	default:
-    		System.out.println("opcao invalida");
+    	case 4:
+    		op.nextLine();
+			System.out.println("Buscando Vendas por cliente");
+			System.out.println("Digite o cod Cliente:");
+		    opcao2=op.nextLine();
+		    cli=Clidao.buscar(opcao2);
+		    //BUSCAR SE O CLIENTE EXISTE
+		  if(cli!=null) {
+		      //BUSCAR EM PESSOA FISICA
+		      pf= pfDAO.buscarPessoaF(opcao2);
+		      venda= vDAO.buscarVendaPorPessoa(opcao2);
+		      if(pf!=null){
+			    System.out.println("PESSOAFISICA");
+                if(venda!=null) {
+
+			    cli.setVenda(vDAO.buscarVendaPorP(cli.getId()));
+                   System.out.println("PessoaFISICA possui VENDA"); 
+                
+                   for(i=0;i<cli.getVenda().size();i++) {      
+                	   System.out.println("--------------Venda:"+(i+1)+"--------------");
+                       System.out.println("Data da venda: "+ cli.getVenda().get(i).getData_venda());       
+                       System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda()); 
+                       System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());                        
+                       System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());         
+                       System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto());                                        												  
+                    }
+                   }else {
+                   System.out.println("PessoaFISICA NÃO possui VENDA"); 
+			      }
+		        		
+		      }else{
+		        	
+		        pj=Pjdao.buscarPessoaJ(opcao2);
+		        if(pj!=null) {
+		       	  System.out.println("PESSOAJURIDICA.");
+                  venda=vDAO.buscarVendaPorPessoa(opcao2);
+                  if(venda!=null) {
+                	  cli.setVenda(vDAO.buscarVendaPorP(cli.getId()));
+                      
+                     System.out.println("PESSOAJURIDICA possui VENDA.");
+                    
+                     for(i=0;i<cli.getVenda().size();i++) {      
+                  	   System.out.println("--------------Venda:"+(i+1)+"--------------");
+                         System.out.println("Data da venda: "+ cli.getVenda().get(i).getData_venda());       
+                         System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda()); 
+                         System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());                        
+                         System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());         
+                         System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto());                                        												  
+                      }
+                     
+                  
+                  }else {
+                       System.out.println("PESSOAJURIDICA NÃO possui VENDA.");
+                    }
+		        		 
+		        }else{
+			        System.out.println("CLIENTE !!");
+			        venda=vDAO.buscarVendaPorPessoa(opcao2);
+                    if(venda==null) {
+				          Clidao.excluirCliente(opcao2);
+                      System.out.println("CLIENTE NÃO possui VENDA.");
+                    }else {
+                      Clidao.excluirCliente(opcao2);
+					       
+                      vDAO.excluirVendaPorPessoa(opcao2);
+				      
+                       System.out.println("CLIENTE  possui VENDA.");
+                    }
+			   }
+		     }
+		    }else{
+			   System.out.println("Cliente NÃO existe!!!");
+		    }
+		break;
+    	case 5:
+    		 do {
+  				System.out.println("---------------------");
+  				System.out.println("Menu Secundario FUNCIONARIO");
+  				System.out.println("---------------------");
+  				System.out.println("1-Cadastrar o Funcionario");
+  				System.out.println("2-Excluir FUNCIONARIO");
+  				System.out.println("3-voltar ao menu principal");
+  				System.out.println("Digite a opcao desejada");
+  				opcao=op2.nextInt();
+  				switch(opcao) {
+  				case 1:
+  					do {
+  					System.out.println("Cadastrando um Funcionario.....");
+  					System.out.println("Digite o cod do Funcionario:");
+  					 usuario=op.nextInt();
+ 				     u=uDAO.buscarUsuario(usuario);
+ 				    if(u!=null) {
+ 				    	
+ 				    	System.out.println("Funcionario ja existe");
+ 				    	resp=2;
+ 				      }else {
+ 				    	  u=new Usuario();
+ 		  				  op.nextLine();
+ 				    	  u.setId(usuario);
+ 		  				  System.out.println("digite o nome do funcionario:");
+ 				    	  u.setNome_funcionario(op.nextLine());
+ 				    	  System.out.println("digite o endereço do funcionario:");
+ 				    	  u.setEndereco(op.nextLine());
+ 				    	  System.out.println("digite o Telefone do funcionario:");
+				    	  u.setTelefone(op.nextInt());
+				    	  System.out.println("digite o numero da Carteira:");
+ 				    	  u.setN_carteira(op.nextInt());
+ 				    	  uDAO.incluirUsuario(u);
+ 				    	  System.out.println("deseja cadastrar mais FUNCIONARIOS?1-s 2-n");
+ 						  resp=op.nextInt();
+ 				    	System.out.println("Cadastro feito!!");
+ 				
+ 				    }
+ 				   
+			    }while(resp!=2);
+  					
+                break;
+  				case 2:
+  					do {
+  						System.out.println("Excluindo FUNCIONARIO....");
+  						System.out.println("Digite o cod do Funcionario:");
+  	  					 usuario=op.nextInt();
+  	 				     u=uDAO.buscarUsuario(usuario);
+  	 				    if(u==null) {
+  	 				    	
+  	 				    	System.out.println("Funcionario NÃO existe");
+  	 				    	resp=2;
+  	 				      }else {
+  	 				    	uDAO.excluirUsuario(usuario);
+  	 				    	System.out.println("deseja excluir mais algum FUNCIONARIOS?1-s 2-n");
+  	 						resp=op.nextInt();
+  	 				    	System.out.println("Exclusao feita!!");
+  	 				
+  	 				    }
+  	 				   
+  				    }while(resp!=2);
+  	            break;
+  	  		   
+  			   }
+  			}while(opcao!=3);
     	break;
-		    
-		
-	    
 	}
-  }while(opcao!=5);
-	
+  }while(escolha!=6);
+	System.out.println("fim");
 
  }
 }
