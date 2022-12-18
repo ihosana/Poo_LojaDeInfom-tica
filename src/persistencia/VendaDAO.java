@@ -1,16 +1,20 @@
 package persistencia;
 
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import dominio.Cliente;
 import dominio.Produto;
+import dominio.Usuario;
 import dominio.Venda;
 
 public class VendaDAO {
 	private Conexao c;
+	private ClienteDAO cliente;
+	private UsuarioDAO udao;
 	private String TodasVendas="SELECT*FROM Venda";
 	private String Inserir="Insert into Venda (datavenda,horavenda,qntProduto,fk_usuario,fk_produto,fk_cliente) VALUES (?,?,?,?,?,?); ";
 	private String Buscar= " SELECT* from Venda where id=?";
@@ -20,6 +24,7 @@ public class VendaDAO {
 	private String BuscarProduto="SELECT*FROM venda where fk_produto=?";
 	private String ExcluirProduto="Delete from venda where fk_produto=? ";
 	private String AtualizarVenda ="UPDATE venda set fk_cliente=? where fk_cliente=? ";
+	private String BuscarVendaPorUser="select*from venda where fk_usuario=?";
 //select venda por data
 
 	public VendaDAO() {
@@ -32,9 +37,9 @@ public class VendaDAO {
 			 instrucao.setString(1,venda.getData_venda());
 			 instrucao.setString(2,venda.getHorario_venda());
 			 instrucao.setInt(3,venda.getQnt());
-			 instrucao.setInt(4,venda.getFk_usuario());
+			 instrucao.setInt(4,venda.getFk_usuario().getId());
 			 instrucao.setInt(5,venda.getFk_produto());
-			 instrucao.setString(6,venda.getFk_cliente());
+			 instrucao.setString(6,venda.getFk_cliente().getId());
 			 instrucao.execute();
 		    }catch(Exception e) {
 			   System.out.println("ERRO EM Cadastrar VENDAAAA"+ e.getMessage());
@@ -45,14 +50,23 @@ public class VendaDAO {
 		   }
 	 public Venda buscarVenda(int id) {
 		  Venda v= null ;
+		  Cliente cli;
+		  cliente= new ClienteDAO();
+		  udao= new UsuarioDAO() ;
+	        Usuario user;
 		 try {
 			 c.conectar();
 			 PreparedStatement instrucao= c.getConexao().prepareStatement(Buscar);
 			 instrucao.setInt(1,id);
-			 
+			
 			 ResultSet result= instrucao.executeQuery();
 			 if(result.next()) {
-					v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));
+					v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+					cli= cliente.buscar(result.getString("fk_cliente"));
+		            v.setFk_cliente(cli);
+		            user= udao.buscarUsuario(result.getInt("fk_usuario"));
+		            v.setFk_usuario(user);
+		        		
 				}
 				
 			 
@@ -94,6 +108,10 @@ public class VendaDAO {
 		 }
    public Venda buscarVendaPorPessoa(String pessoa) {
 	   Venda v=null;
+	   Cliente cli;
+       Usuario user;
+       cliente= new ClienteDAO();
+		  udao= new UsuarioDAO() ;
 	   try {
 	    	  c.conectar();
 	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarP);
@@ -101,7 +119,12 @@ public class VendaDAO {
 
 			  ResultSet result= instrucao.executeQuery();
 			  if(result.next()) {
-				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));
+				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+				cli= cliente.buscar(result.getString("fk_cliente"));
+	            v.setFk_cliente(cli);
+	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
+	            v.setFk_usuario(user);
+                
 			  }
 	    	  
 	    	  c.desconectar();
@@ -112,18 +135,29 @@ public class VendaDAO {
    }
 	 public ArrayList<Venda> buscarVendaPorP(String pessoa) {
 	        ArrayList<Venda> lista = new ArrayList<>();
+	        Cliente cli;
+	        Usuario user;
+	        Venda v;
+	        cliente= new ClienteDAO();
+			  udao= new UsuarioDAO() ;
 	        try{
 	        	 c.conectar();
 	            PreparedStatement instrucao = c.getConexao().prepareStatement(BuscarP);
 	            instrucao.setString(1, pessoa);
 	            ResultSet result = instrucao.executeQuery();
 	            while(result.next()){
-	                Venda v = new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));
-	        		
+	                v = new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+	                cli= cliente.buscar(result.getString("fk_cliente"));
+	                v.setFk_cliente(cli);
+	                user= udao.buscarUsuario(result.getInt("fk_usuario"));
+		            v.setFk_usuario(user);
+
+	        		cli.setVenda(lista);
 	                lista.add(v);
 	            }
+	           
 	            c.desconectar();
-	        }catch(SQLException e){
+	        }catch(Exception e){
 	            System.out.println("Erro no relat�rio: "+e.getMessage());
 	        }
 	        return lista;
@@ -131,6 +165,10 @@ public class VendaDAO {
 	 
    public Venda buscarVendaPorProduto(int id) {
 	   Venda v= null;
+	   Cliente cli;
+       Usuario user;
+       cliente= new ClienteDAO();
+		  udao= new UsuarioDAO() ;
 	   try {
 		   c.conectar();
 		   
@@ -138,7 +176,12 @@ public class VendaDAO {
            instrucao.setInt(1,id);		   
 		   ResultSet result = instrucao.executeQuery();
 		   if(result.next()) {
-			   v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));;
+			   v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+			   cli= cliente.buscar(result.getString("fk_cliente"));
+               v.setFk_cliente(cli);
+               user= udao.buscarUsuario(result.getInt("fk_usuario"));
+	            v.setFk_usuario(user);
+
 		   }
 		   c.desconectar();
 	   }catch(Exception a) {
@@ -175,6 +218,10 @@ public class VendaDAO {
 		 }
    public ArrayList<Venda> emitirVenda() {
 	   Venda v;
+	   Cliente cli;
+       Usuario user;
+       cliente= new ClienteDAO();
+	   udao= new UsuarioDAO() ;
 	ArrayList<Venda> lista= new ArrayList<Venda>();
 		try {
 			c.conectar();
@@ -183,7 +230,14 @@ public class VendaDAO {
 			
 			//DESMONTANDO O RESULT SET
 			while(result.next()) {
-		    v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_usuario"),result.getInt("fk_produto"),result.getString("fk_cliente"));;
+				   v = new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+	                cli= cliente.buscar(result.getString("fk_cliente"));
+	                v.setFk_cliente(cli);
+	                user= udao.buscarUsuario(result.getInt("fk_usuario"));
+		            v.setFk_usuario(user);
+
+	        		cli.setVenda(lista);
+				
 				lista.add(v);
 			}
 		
@@ -194,4 +248,63 @@ public class VendaDAO {
 
 		return lista;
 	}
+   
+   public Venda buscarVendaPorUser(int usuario) {
+	   Venda v=null;
+	   Cliente cli;
+       Usuario user;
+       cliente= new ClienteDAO();
+	  udao= new UsuarioDAO() ;
+	   try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarVendaPorUser);
+			  instrucao.setInt(1,usuario);
+
+			  ResultSet result= instrucao.executeQuery();
+			  if(result.next()) {
+				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+				cli= cliente.buscar(result.getString("fk_cliente"));
+	            v.setFk_cliente(cli);
+	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
+	            v.setFk_usuario(user);
+                
+			  }
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
+			 }
+	   return v;
+   }
+   public ArrayList<Venda> buscarVendaPorU(int usuario) {
+	   Venda v=null;
+	   Cliente cli;
+       Usuario user;
+       ArrayList<Venda>ListaVenda=new ArrayList<Venda>();
+       cliente= new ClienteDAO();
+	  udao= new UsuarioDAO() ;
+	   try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarVendaPorUser);
+			  instrucao.setInt(1,usuario);
+
+			  ResultSet result= instrucao.executeQuery();
+			  if(result.next()) {
+				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+				cli= cliente.buscar(result.getString("fk_cliente"));
+	            v.setFk_cliente(cli);
+	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
+	            v.setFk_usuario(user);
+                ListaVenda.add(v);
+			  }
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
+			 }
+	   return ListaVenda;
+   }
+   
+   
+   
 }

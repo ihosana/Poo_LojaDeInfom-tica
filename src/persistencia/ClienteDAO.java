@@ -13,7 +13,7 @@ private String Inserir="INSERT INTO Cliente(id,endereco,telefone) VALUES (?,?,?)
 private String Buscar= " SELECT* from Cliente where id=? ";
 private String Excluir=" Delete from Cliente WHERE id=? ";
 private String AtualizarCliente ="UPDATE cliente set id=? where id=? ";
-private String TodosCliente="SELECT*FROM Cliente";
+
 
 
 //ALTERAR CPF/CNPJ

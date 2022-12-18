@@ -44,8 +44,8 @@ public class principal {
            Produto p ;
            Produto p1;
            boolean permitido;
-           
-           ArrayList<Venda>ListaVendas= new ArrayList<Venda>();
+           ArrayList<Usuario>funcionario;
+           ArrayList<Venda>ListaVendas;
            ArrayList<Produto> prod;
            ArrayList<String>v=new ArrayList<String>();
            Usuario u;
@@ -113,6 +113,8 @@ public class principal {
 					  do{
 				  		   System.out.println("Digite o codigo do produto a ser inserido:");
 						   opcao4=op.nextInt();
+
+					      
 						   p=pDAO.buscarProduto(opcao4);
 						   if(p==null) { 
 						   	  System.out.println("Produto PRECISA ser cadastrado");	
@@ -121,7 +123,7 @@ public class principal {
 						   }else{
 						       op.nextLine();
 						       produtoV=true;
-						       p.setCodigoProduto(opcao4);
+                               p.setCodigoProduto(opcao4);
 						       venda.setFk_produto(opcao4);
 						       produtos.add(p);
 					           System.out.println("Tudo certo");
@@ -136,11 +138,12 @@ public class principal {
 							   System.out.println("HORA da realização da venda:"+horaFormatada);
 							   venda.setData_venda(dataFormatada);
 				   			   venda.setHorario_venda(horaFormatada);	
-				   			   venda.setFk_usuario(usuario);
-						       venda.setFk_cliente(id);
-						 
+				   			   venda.setFk_usuario(u);
+						       venda.setFk_cliente(cli);
 						       vDAO.inserirVenda(venda);
-							   
+						       ListaVendas= new ArrayList<Venda>();
+						       ListaVendas.add(venda);
+						       u.setV(ListaVendas);
 							   System.out.println("Venda sucedida com sucesso!!!"); 
 					          
 					        }		
@@ -154,29 +157,30 @@ public class principal {
 						   if(produtoV==true){
 							   cli.setVenda(vDAO.buscarVendaPorP(cli.getId()));
 							   venda.setP(produtos);
+							   
 							   cli.getVenda();
 							   System.out.println("*********Comprovante!!!!*********");						
 							   for(i=0;i<venda.getP().size();i++) {
-								System.out.println("---------PRODUTO-"+(i+1)+"--------");
-								System.out.println("Codigo do produto: "+venda.getP().get(i).getCodigoProduto());
-								System.out.println("Nome: "+venda.getP().get(i).getNomeProduto());	
-								System.out.println("Valor: "+venda.getP().get(i).getValorProduto());
-								System.out.println("Categoria: "+venda.getP().get(i).getCategoria());
-							
+									System.out.println("---------PRODUTO-"+(i+1)+"--------");
+									System.out.println("Codigo do produto: "+venda.getP().get(i).getCodigoProduto());
+									System.out.println("Nome: "+venda.getP().get(i).getNomeProduto());	
+									System.out.println("Valor: "+venda.getP().get(i).getValorProduto());
+									System.out.println("Categoria: "+venda.getP().get(i).getCategoria());
 								
-							   }
-							   for(i=0;i<cli.getVenda().size();i++) {
-					    			 System.out.println("------------------------------");
-									  System.out.println("venda: 0"+i);
-									  System.out.println("Data da venda: "+ cli.getVenda().get(i).getData_venda());
-									  System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda());
-									  System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());
-									  System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());
-									  System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto());   
-					    		 }
-							         System.out.println("Total de Vendas: "+cli.getTam());
-								  
-							 
+									
+								   }
+//								   for(i=0;i<cli.getVenda().size();i++) {
+//						    			 System.out.println("------------------------------");
+//										  System.out.println("venda: 0"+i);
+//										  System.out.println("Data da venda: "+ cli.getVenda().get(i).getData_venda());
+//										  System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda());
+//										  System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());
+//										  System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario().getId());
+//										  System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto().getCodigoProduto());
+//						    		 }
+//								         System.out.println("Total de Vendas: "+cli.getTam());
+//									  
+//							 
 					    	 
 							   System.out.println("Venda sucedida com sucesso!!!"); 		  
 						   }
@@ -193,7 +197,6 @@ public class principal {
 				  System.out.println("Cancelando a venda...");
 				  System.out.println("Digite o codigo da venda");
 				  opcao=op.nextInt();
-				  venda.setId(opcao);
 				  venda= vDAO.buscarVenda(opcao);
 				 if(venda==null) {
 				     //ERRO
@@ -225,9 +228,9 @@ public class principal {
 				  System.out.println("Data da venda: "+ListaVendas.get(i).getData_venda());
 				  System.out.println("Horario da venda: "+ ListaVendas.get(i).getHorario_venda());
 				  System.out.println("Qtd do produto: "+ ListaVendas.get(i).getQnt());
-				  System.out.println("Funcionario: "+ListaVendas.get(i).getFk_usuario());
+				  System.out.println("Funcionario: "+ListaVendas.get(i).getFk_usuario().getId());
 				  System.out.println("Produto: "+ListaVendas.get(i).getFk_produto()); 
-				  System.out.println("Cliente: "+ListaVendas.get(i).getFk_cliente());     
+				  System.out.println("Cliente: "+ListaVendas.get(i).getFk_cliente().getId());     
    		
 		     }
 		     break;	 
@@ -334,8 +337,7 @@ public class principal {
 			    System.out.println("1-Cadastrar Cliente");
 			    System.out.println("2-Excluir Cliente");
 			    System.out.println("3-Alterar o CPF/CNPJ do Cliente");
-			    System.out.println("4- Relatorio dos Cliente");
-			    System.out.println("5-voltar ao menu principal");
+			    System.out.println("4-voltar ao menu principal");
 			    System.out.println("Digite a opcao desejada");
 			    opcao=op2.nextInt();
 			        
@@ -491,7 +493,7 @@ public class principal {
 									  System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda());
 									  System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());
 									  System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());
-									  System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto()); 
+									  System.out.println("Produto: "+cli.getVenda().get(i).getP().get(i).getCodigoProduto()); 
 							       }
 						 	         System.out.println("Total de Vendas: "+cli.getTam());
 								     System.out.println("------------------------------");
@@ -568,7 +570,7 @@ public class principal {
 										  System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda());
 										  System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());
 										  System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());
-										  System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto()); 
+										  System.out.println("Produto: "+cli.getVenda().get(i).getP().get(i).getCodigoProduto()); 
 								       }
 								         System.out.println("Total de Vendas: "+cli.getTam());
 								         System.out.println("------------------------------");
@@ -632,7 +634,7 @@ public class principal {
 												  System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda());
 												  System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());
 												  System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());
-												  System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto()); 
+												  System.out.println("Produto: "+cli.getVenda().get(i).getP().get(i).getCodigoProduto()); 
 										       }
 										          System.out.println("Total de Vendas: "+cli.getTam());
 										          System.out.println("------------------------------");
@@ -683,75 +685,32 @@ public class principal {
 					
     	break;
     	case 4:
+    		cli=new Cliente();
+    		ArrayList<Venda>ve = new ArrayList<Venda>();
     		op.nextLine();
 			System.out.println("Buscando Vendas por cliente");
 			System.out.println("Digite o cod Cliente:");
 		    opcao2=op.nextLine();
 		    cli=Clidao.buscar(opcao2);
-		    //BUSCAR SE O CLIENTE EXISTE
+		   
 		  if(cli!=null) {
-		      //BUSCAR EM PESSOA FISICA
-		      pf= pfDAO.buscarPessoaF(opcao2);
-		      venda= vDAO.buscarVendaPorPessoa(opcao2);
-		      if(pf!=null){
-			    System.out.println("PESSOAFISICA");
-                if(venda!=null) {
-
-			    cli.setVenda(vDAO.buscarVendaPorP(cli.getId()));
-                   System.out.println("PessoaFISICA possui VENDA"); 
-                
-                   for(i=0;i<cli.getVenda().size();i++) {      
-                	   System.out.println("--------------Venda:"+(i+1)+"--------------");
-                       System.out.println("Data da venda: "+ cli.getVenda().get(i).getData_venda());       
-                       System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda()); 
-                       System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());                        
-                       System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());         
-                       System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto());                                        												  
-                    }
-                   }else {
-                   System.out.println("PessoaFISICA NÃO possui VENDA"); 
-			      }
-		        		
-		      }else{
-		        	
-		        pj=Pjdao.buscarPessoaJ(opcao2);
-		        if(pj!=null) {
-		       	  System.out.println("PESSOAJURIDICA.");
-                  venda=vDAO.buscarVendaPorPessoa(opcao2);
-                  if(venda!=null) {
-                	  cli.setVenda(vDAO.buscarVendaPorP(cli.getId()));
+			  venda= vDAO.buscarVendaPorPessoa(cli.getId());
+			  if(venda!=null) {
                       
-                     System.out.println("PESSOAJURIDICA possui VENDA.");
-                    
-                     for(i=0;i<cli.getVenda().size();i++) {      
-                  	   System.out.println("--------------Venda:"+(i+1)+"--------------");
-                         System.out.println("Data da venda: "+ cli.getVenda().get(i).getData_venda());       
-                         System.out.println("Horario da venda: "+ cli.getVenda().get(i).getHorario_venda()); 
-                         System.out.println("Qtd: "+ cli.getVenda().get(i).getQnt());                        
-                         System.out.println("Funcionario: "+cli.getVenda().get(i).getFk_usuario());         
-                         System.out.println("Produto: "+cli.getVenda().get(i).getFk_produto());                                        												  
-                      }
-                     
-                  
-                  }else {
-                       System.out.println("PESSOAJURIDICA NÃO possui VENDA.");
-                    }
-		        		 
-		        }else{
-			        System.out.println("CLIENTE !!");
-			        venda=vDAO.buscarVendaPorPessoa(opcao2);
-                    if(venda==null) {
-				          Clidao.excluirCliente(opcao2);
-                      System.out.println("CLIENTE NÃO possui VENDA.");
-                    }else {
-                      Clidao.excluirCliente(opcao2);
-					       
-                      vDAO.excluirVendaPorPessoa(opcao2);
-				      
-                       System.out.println("CLIENTE  possui VENDA.");
-                    }
-			   }
-		     }
+				    cli.setVenda(vDAO.buscarVendaPorP(cli.getId()));
+	                   System.out.println("Pessoa possui VENDA"); 
+	                ve=cli.getVenda();
+	                   for(i=0;i<ve.size();i++) {      
+	                	   System.out.println("--------------Venda:"+(i+1)+"--------------");
+	                       System.out.println("Data da venda: "+ ve.get(i).getData_venda());       
+	                       System.out.println("Horario da venda: "+ ve.get(i).getHorario_venda()); 
+	                       System.out.println("Qtd: "+ ve.get(i).getQnt());                        
+	                       System.out.println("Funcionario: "+ve.get(i).getFk_usuario().getId());         
+	                       System.out.println("Produto: "+ve.get(i).getFk_produto());                                 												  
+	                    }  
+			  }
+			  
+			  
 		    }else{
 			   System.out.println("Cliente NÃO existe!!!");
 		    }
@@ -763,12 +722,15 @@ public class principal {
   				System.out.println("---------------------");
   				System.out.println("1-Cadastrar o Funcionario");
   				System.out.println("2-Excluir FUNCIONARIO");
-  				System.out.println("3-voltar ao menu principal");
+  				System.out.println("3-Buscar Todos os funcionarios");
+  				System.out.println("4-Buscar Vendas por funcionario");
+  				System.out.println("5-voltar ao menu principal");
   				System.out.println("Digite a opcao desejada");
   				opcao=op2.nextInt();
   				switch(opcao) {
   				case 1:
   					do {
+  						
   					System.out.println("Cadastrando um Funcionario.....");
   					System.out.println("Digite o cod do Funcionario:");
   					 usuario=op.nextInt();
@@ -790,6 +752,7 @@ public class principal {
 				    	  System.out.println("digite o numero da Carteira:");
  				    	  u.setN_carteira(op.nextInt());
  				    	  uDAO.incluirUsuario(u);
+ 				    	 
  				    	  System.out.println("deseja cadastrar mais FUNCIONARIOS?1-s 2-n");
  						  resp=op.nextInt();
  				    	System.out.println("Cadastro feito!!");
@@ -817,11 +780,51 @@ public class principal {
   	 				
   	 				    }
   	 				   
-  				    }while(resp!=2);
+  				    }while(resp!=3);
   	            break;
-  	  		   
+  				case 3:
+  					
+  					System.out.println("Buscando todos os funcionario....");
+			         funcionario=uDAO.buscarTodos();
+					
+						for(i=0;i<uDAO.buscarTodos().size();i++) {
+						   System.out.println("---------Funcionario:"+(i+1)+"-------------");
+		                   System.out.println("Nome do funcionario: "+ funcionario.get(i).getNome_funcionario());       
+		                   System.out.println("Endereco: "+ funcionario.get(i).getEndereco()); 
+		                   System.out.println("telefone: "+ funcionario.get(i).getTelefone());                        
+		                   System.out.println("Carteira: "+funcionario.get(i).getN_carteira());         
+						}
+			
+					
+  				break;	
+  				case 4:
+  					ListaVendas= new ArrayList<Venda>();
+  					
+                     u= new Usuario();
+  					System.out.println("Buscando as vendas por funcionario...");
+  					System.out.println("Insira o cod do funcionario:");
+  					usuario=op.nextInt();
+  					
+  					venda=vDAO.buscarVendaPorUser(usuario);
+  					if(venda!=null) {
+  						
+  						   u.setV(vDAO.buscarVendaPorU(usuario));
+  						 ListaVendas=u.getV();
+  						for(i=0;i<ListaVendas.size();i++) {      
+ 	                	   System.out.println("--------------Venda:"+(i+1)+"--------------");
+ 	                       System.out.println("Data da venda: "+ ListaVendas.get(i).getData_venda());       
+ 	                       System.out.println("Horario da venda: "+ ListaVendas.get(i).getHorario_venda()); 
+ 	                       System.out.println("Qtd: "+ ListaVendas.get(i).getQnt());                        
+ 	                       System.out.println("Funcionario: "+ListaVendas.get(i).getFk_usuario().getId());         
+ 	                       System.out.println("Produto: "+ListaVendas.get(i).getFk_produto());                                 												  
+ 	                    }  
+  					}
+  					
+  					
+  				break;
+  				
   			   }
-  			}while(opcao!=3);
+  			}while(opcao!=5);
     	break;
 	}
   }while(escolha!=6);

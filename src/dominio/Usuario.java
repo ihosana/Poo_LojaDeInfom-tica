@@ -1,5 +1,7 @@
 package dominio;
 
+import java.util.ArrayList;
+
 public class Usuario {
 
 private	String nome_funcionario;
@@ -7,6 +9,8 @@ private	String endereco;
 private	int telefone;
 private	int n_carteira;
 private int id;
+ArrayList <Venda>v;
+
 
 public Usuario(int id,String nome_funcionario, String endereco, int telefone, int n_carteira){
 	this.id=id;
@@ -24,6 +28,13 @@ public int getId() {
 	return id;
 }
 
+public ArrayList<Venda> getV() {
+	return v;
+}
+
+public void setV(ArrayList<Venda> v) {
+	this.v = v;
+}
 public void setId(int id) {
 	this.id = id;
 }
