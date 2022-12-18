@@ -723,8 +723,7 @@ public class principal {
   				System.out.println("1-Cadastrar o Funcionario");
   				System.out.println("2-Excluir FUNCIONARIO");
   				System.out.println("3-Buscar Todos os funcionarios");
-  				System.out.println("4-Buscar Vendas por funcionario");
-  				System.out.println("5-voltar ao menu principal");
+  				System.out.println("4-voltar ao menu principal");
   				System.out.println("Digite a opcao desejada");
   				opcao=op2.nextInt();
   				switch(opcao) {
@@ -797,34 +796,9 @@ public class principal {
 			
 					
   				break;	
-  				case 4:
-  					ListaVendas= new ArrayList<Venda>();
-  					
-                     u= new Usuario();
-  					System.out.println("Buscando as vendas por funcionario...");
-  					System.out.println("Insira o cod do funcionario:");
-  					usuario=op.nextInt();
-  					
-  					venda=vDAO.buscarVendaPorUser(usuario);
-  					if(venda!=null) {
-  						
-  						   u.setV(vDAO.buscarVendaPorU(usuario));
-  						 ListaVendas=u.getV();
-  						for(i=0;i<ListaVendas.size();i++) {      
- 	                	   System.out.println("--------------Venda:"+(i+1)+"--------------");
- 	                       System.out.println("Data da venda: "+ ListaVendas.get(i).getData_venda());       
- 	                       System.out.println("Horario da venda: "+ ListaVendas.get(i).getHorario_venda()); 
- 	                       System.out.println("Qtd: "+ ListaVendas.get(i).getQnt());                        
- 	                       System.out.println("Funcionario: "+ListaVendas.get(i).getFk_usuario().getId());         
- 	                       System.out.println("Produto: "+ListaVendas.get(i).getFk_produto());                                 												  
- 	                    }  
-  					}
-  					
-  					
-  				break;
   				
   			   }
-  			}while(opcao!=5);
+  			}while(opcao!=4);
     	break;
 	}
   }while(escolha!=6);

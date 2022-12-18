@@ -249,61 +249,7 @@ public class VendaDAO {
 		return lista;
 	}
    
-   public Venda buscarVendaPorUser(int usuario) {
-	   Venda v=null;
-	   Cliente cli;
-       Usuario user;
-       cliente= new ClienteDAO();
-	  udao= new UsuarioDAO() ;
-	   try {
-	    	  c.conectar();
-	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarVendaPorUser);
-			  instrucao.setInt(1,usuario);
-
-			  ResultSet result= instrucao.executeQuery();
-			  if(result.next()) {
-				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
-				cli= cliente.buscar(result.getString("fk_cliente"));
-	            v.setFk_cliente(cli);
-	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
-	            v.setFk_usuario(user);
-                
-			  }
-	    	  
-	    	  c.desconectar();
-		  }catch(Exception e) {
-				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
-			 }
-	   return v;
-   }
-   public ArrayList<Venda> buscarVendaPorU(int usuario) {
-	   Venda v=null;
-	   Cliente cli;
-       Usuario user;
-       ArrayList<Venda>ListaVenda=new ArrayList<Venda>();
-       cliente= new ClienteDAO();
-	  udao= new UsuarioDAO() ;
-	   try {
-	    	  c.conectar();
-	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarVendaPorUser);
-			  instrucao.setInt(1,usuario);
-
-			  ResultSet result= instrucao.executeQuery();
-			  if(result.next()) {
-				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
-				cli= cliente.buscar(result.getString("fk_cliente"));
-	            v.setFk_cliente(cli);
-	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
-	            v.setFk_usuario(user);
-                ListaVenda.add(v);
-			  }
-	    	  
-	    	  c.desconectar();
-		  }catch(Exception e) {
-				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
-			 }
-	   return ListaVenda;
-   }
+  
    
    
    
