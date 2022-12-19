@@ -25,7 +25,10 @@ public class VendaDAO {
 	private String ExcluirProduto="Delete from venda where fk_produto=? ";
 	private String AtualizarVenda ="UPDATE venda set fk_cliente=? where fk_cliente=? ";
 	private String BuscarVendaPorUser="select*from venda where fk_usuario=?";
-//select venda por data
+
+	private String ExcluirUser="Delete from Venda where fk_usuario=?";
+	
+	//select venda por data
 
 	public VendaDAO() {
 		 c=new Conexao("jdbc:postgresql://127.0.0.1:5432/POO_projeto","postgres","ihosanaassis");
@@ -250,7 +253,75 @@ public class VendaDAO {
 	}
    
   
+   public Venda buscarVendaPorUser(int usuario) {
+	   Venda v=null;
+	   Cliente cli;
+       Usuario user;
+       cliente= new ClienteDAO();
+	  udao= new UsuarioDAO() ;
+	   try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarVendaPorUser);
+			  instrucao.setInt(1,usuario);
+
+			  ResultSet result= instrucao.executeQuery();
+			  if(result.next()) {
+				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+				cli= cliente.buscar(result.getString("fk_cliente"));
+	            v.setFk_cliente(cli);
+	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
+	            v.setFk_usuario(user);
+                
+			  }
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
+			 }
+	   return v;
+   }
+   public ArrayList<Venda> buscarVendaPorU(int usuario) {
+	   Venda v=null;
+	   Cliente cli;
+       Usuario user;
+       ArrayList<Venda>ListaVenda=new ArrayList<Venda>();
+       cliente= new ClienteDAO();
+	  udao= new UsuarioDAO() ;
+	   try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(BuscarVendaPorUser);
+			  instrucao.setInt(1,usuario);
+
+			  ResultSet result= instrucao.executeQuery();
+			  if(result.next()) {
+				v= new Venda(result.getString("datavenda"),result.getString("horavenda"),result.getInt("qntproduto"),result.getInt("fk_produto"));
+				cli= cliente.buscar(result.getString("fk_cliente"));
+	            v.setFk_cliente(cli);
+	            user= udao.buscarUsuario(result.getInt("fk_usuario"));
+	            v.setFk_usuario(user);
+                ListaVenda.add(v);
+			  }
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na BUSCA VENDA POR PESSOA " + e.getMessage());
+			 }
+	   return ListaVenda;
+   }
    
+   public void excluirVendaPoruUser(int id) {
+	      try {
+	    	  c.conectar();
+	    	  PreparedStatement instrucao= c.getConexao().prepareStatement(ExcluirUser);
+				 instrucao.setInt(1,id);
+				 instrucao.execute();
+	    	  
+	    	  
+	    	  c.desconectar();
+		  }catch(Exception e) {
+				 System.out.println("erro na Exclusão de VENDA por USER: " + e.getMessage());
+			 }
+		 }
    
    
 }

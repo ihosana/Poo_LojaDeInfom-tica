@@ -766,20 +766,28 @@ public class principal {
   						System.out.println("Excluindo FUNCIONARIO....");
   						System.out.println("Digite o cod do Funcionario:");
   	  					 usuario=op.nextInt();
-  	 				     u=uDAO.buscarUsuario(usuario);
-  	 				    if(u==null) {
+  	 				     venda=vDAO.buscarVendaPorUser(usuario);
+  	 				   
+  	  					 u=uDAO.buscarUsuario(usuario);
+  	 				    if(u!=null) {
+  	 				    	if(venda!=null) {
+  	 				    		vDAO.excluirVendaPoruUser(usuario);
+  	  	 				    	uDAO.excluirUsuario(usuario);
+  	  	 				    	
+  	 				    	}   
+  	 				    	   uDAO.excluirUsuario(usuario);
+  	 				    	    System.out.println("deseja excluir mais algum FUNCIONARIOS?1-s 2-n");
+     	 				    	resp=op.nextInt();
+	  	 				    	System.out.println("Exclusao feita!!");
   	 				    	
+  	 				      }else {
   	 				    	System.out.println("Funcionario NÃO existe");
   	 				    	resp=2;
-  	 				      }else {
-  	 				    	uDAO.excluirUsuario(usuario);
-  	 				    	System.out.println("deseja excluir mais algum FUNCIONARIOS?1-s 2-n");
-  	 						resp=op.nextInt();
-  	 				    	System.out.println("Exclusao feita!!");
-  	 				
+  	 				      
   	 				    }
+  	 				 
   	 				   
-  				    }while(resp!=3);
+  				    }while(resp!=2);
   	            break;
   				case 3:
   					
